@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react"
-import personServices from "./services/persons"
+import { useState, useEffect } from 'react'
+import personServices from './services/persons'
 
 const Notification = ({ message, error }) => {
   const notiStyle = {
-    color: error ? "red" : "green",
-    backGround: "lightgrey",
+    color: error ? 'red' : 'green',
+    backGround: 'lightgrey',
     fontSize: 20,
-    borderStyle: "solid",
+    borderStyle: 'solid',
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
@@ -57,7 +57,7 @@ const PersonForm = ({
       number: <input value={newNumber} onChange={handleNumberChange} />
     </div>
     <div>
-      <button type="submit">add</button>
+      <button type='submit'>add</button>
     </div>
   </form>
 )
@@ -70,9 +70,9 @@ const Persons = ({ personsToShow, removeById }) => {
 
 const App = () => {
   const [persons, setPersons] = useState([])
-  const [newName, setNewName] = useState("")
-  const [newNumber, setNewNumber] = useState("")
-  const [filter, setNewFilter] = useState("")
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [filter, setNewFilter] = useState('')
   const [message, setMessage] = useState(null)
   const [error, setError] = useState(false)
 
@@ -145,14 +145,20 @@ const App = () => {
             handleNewMessage(`Editing ${modifiedPerson.name} succesful`, false)
           })
           .catch((error) => {
-            handleNewMessage(
-              `User ${modifiedPerson.name} already removed from the server`,
-              true
-            )
-            setPersons(persons.filter((person) => person.id !== foundPerson.id))
+            if (error.response.data.error === 'malformatted id') {
+              handleNewMessage(
+                `User ${modifiedPerson.name} already removed from the server`,
+                true
+              )
+              setPersons(
+                persons.filter((person) => person.id !== foundPerson.id)
+              )
+            } else {
+              handleNewMessage(error.response.data.error, true)
+            }
           })
-        setNewName("")
-        setNewNumber("")
+        setNewName('')
+        setNewNumber('')
       }
       return
     }
@@ -170,11 +176,11 @@ const App = () => {
         handleNewMessage(`Added ${person.name}`, false)
       })
       .catch((error) => {
-        handleNewMessage("Something went wrong!", true)
+        handleNewMessage(error.response.data.error, true)
       })
 
-    setNewName("")
-    setNewNumber("")
+    setNewName('')
+    setNewNumber('')
   }
 
   return (
