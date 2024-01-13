@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { likeBlog, deleteBlog } from '../reducers/blogReducer'
 
 const Blog = ({ blog, user }) => {
   const [showDetails, setShowDetails] = useState(false)
+  const dispatch = useDispatch()
 
   const showWhenIdMatches = {
     display: user.username === blog.user.username ? '' : 'none',
@@ -16,9 +19,13 @@ const Blog = ({ blog, user }) => {
     marginBottom: 5,
   }
 
-  const addLike = async () => {}
+  const addLike = async () => {
+    dispatch(likeBlog(blog.id, blog))
+  }
 
-  const handleRemove = async () => {}
+  const handleRemove = async () => {
+    dispatch(deleteBlog(blog.id))
+  }
 
   if (!showDetails) {
     return (
